@@ -1,4 +1,8 @@
-import type { ICanvas, Mirror, DataURLOptions } from '@smartesting/rrweb-snapshot';
+import type {
+  ICanvas,
+  Mirror,
+  DataURLOptions,
+} from '@smartesting/rrweb-snapshot';
 import type {
   blockClass,
   canvasManagerMutationCallback,

@@ -1,4 +1,8 @@
-import { Emitter, MediaInteractions, ReplayerEvents } from '@smartesting/rrweb-types';
+import {
+  Emitter,
+  MediaInteractions,
+  ReplayerEvents,
+} from '@smartesting/rrweb-types';
 import type { RRMediaElement } from 'rrdom/es';
 import type { createPlayerService, createSpeedService } from '../machine';
 import type { Mirror, mediaAttributes } from '@smartesting/rrweb-snapshot';

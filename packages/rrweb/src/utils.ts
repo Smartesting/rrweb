@@ -10,7 +10,11 @@ import type {
   textMutation,
 } from '@smartesting/rrweb-types';
 import type { IMirror, Mirror } from '@smartesting/rrweb-snapshot';
-import { isShadowRoot, IGNORED_NODE, classMatchesRegex } from '@smartesting/rrweb-snapshot';
+import {
+  isShadowRoot,
+  IGNORED_NODE,
+  classMatchesRegex,
+} from '@smartesting/rrweb-snapshot';
 import type { RRNode, RRIFrameElement } from 'rrdom';
 
 export function on(

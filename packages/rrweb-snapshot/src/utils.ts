@@ -219,7 +219,7 @@ export function maskInputValue({
   type,
   value,
   maskInputFn,
-  allowList
+  allowList,
 }: {
   element: HTMLElement;
   maskInputOptions: MaskInputOptions;
@@ -247,15 +247,21 @@ export function inputNeedsMasking(
   allowList: string | null,
   tagName: string,
   type: string | null,
-) : boolean {
+): boolean {
   const actualType = type && toLowerCase(type);
 
-  if (allowList !== null && element.closest(allowList) && actualType !== 'password') return false
+  if (
+    allowList !== null &&
+    element.closest(allowList) &&
+    actualType !== 'password'
+  )
+    return false;
 
   return (
     maskInputOptions[tagName.toLowerCase() as keyof MaskInputOptions] ||
-    (actualType && maskInputOptions[actualType as keyof MaskInputOptions])
-  ) || false
+    (actualType && maskInputOptions[actualType as keyof MaskInputOptions]) ||
+    false
+  );
 }
 
 export function toLowerCase<T extends string>(str: T): Lowercase<T> {

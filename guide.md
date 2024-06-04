@@ -136,7 +136,7 @@ setInterval(save, 10 * 1000);
 The parameter of `rrweb.record` accepts the following options.
 
 | key                      | default            | description                                                                                                                                                                                                               |
-|--------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | emit                     | required           | the callback function to get emitted events                                                                                                                                                                               |
 | checkoutEveryNth         | -                  | take a full snapshot after every N events<br />refer to the [checkout](#checkout) chapter                                                                                                                                 |
 | checkoutEveryNms         | -                  | take a full snapshot after every N ms<br />refer to the [checkout](#checkout) chapter                                                                                                                                     |
@@ -167,7 +167,6 @@ The parameter of `rrweb.record` accepts the following options.
 | plugins                  | []                 | load plugins to provide extended record functions. [What is plugins?](./docs/recipes/plugin.md)                                                                                                                           |
 | errorHandler             | -                  | A callback that is called if something inside of rrweb throws an error. The callback receives the error as argument.                                                                                                      |
 | allowList                | null               | A list of CSS selectors working in conjunction with `maskTextSelector`, `maskInputOptions` and `ignoreSelector`. If the element to be masked or ignored belongs matches the CSS queries, il will not be ignored or masked |
-
 
 #### Privacy
 

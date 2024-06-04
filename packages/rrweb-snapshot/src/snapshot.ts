@@ -274,7 +274,7 @@ export function _isBlockedElement(
   element: HTMLElement,
   blockClass: string | RegExp,
   blockSelector: string | null,
-  allowList: string | null
+  allowList: string | null,
 ): boolean {
   try {
     if (typeof blockClass === 'string') {
@@ -289,7 +289,7 @@ export function _isBlockedElement(
         }
       }
     }
-    if (allowList && element.closest(allowList)) return false
+    if (allowList && element.closest(allowList)) return false;
 
     if (blockSelector) {
       return element.matches(blockSelector);
@@ -336,7 +336,7 @@ export function needMaskingText(
         : node.parentElement;
     if (el === null) return false;
 
-    if (allowList && elementMatchesCssClass(el, allowList, true)) return false
+    if (allowList && elementMatchesCssClass(el, allowList, true)) return false;
 
     if (typeof maskTextClass === 'string') {
       if (checkAncestors) {
@@ -347,20 +347,28 @@ export function needMaskingText(
     } else {
       if (classMatchesRegex(el, maskTextClass, checkAncestors)) return true;
     }
-    if (maskTextSelector && elementMatchesCssClass(el, maskTextSelector, checkAncestors)) return true
+    if (
+      maskTextSelector &&
+      elementMatchesCssClass(el, maskTextSelector, checkAncestors)
+    )
+      return true;
   } catch (e) {
     //
   }
   return false;
 }
 
-function elementMatchesCssClass(el: HTMLElement, selector: string, checkAncestors: boolean) {
+function elementMatchesCssClass(
+  el: HTMLElement,
+  selector: string,
+  checkAncestors: boolean,
+) {
   if (checkAncestors) {
     if (el.closest(selector)) return true;
   } else {
     if (el.matches(selector)) return true;
   }
-  return false
+  return false;
 }
 
 // https://stackoverflow.com/a/36155560
@@ -467,8 +475,8 @@ function serializeNode(
      * `newlyAddedElement: true` skips scrollTop and scrollLeft check
      */
     newlyAddedElement?: boolean;
-    allowList: string | null,
-    blockExtraStyle: string | null
+    allowList: string | null;
+    blockExtraStyle: string | null;
   },
 ): serializedNode | false {
   const {
@@ -487,7 +495,7 @@ function serializeNode(
     keepIframeSrcFn,
     newlyAddedElement = false,
     allowList,
-    blockExtraStyle
+    blockExtraStyle,
   } = options;
   // Only record root id when document object is not the base document
   const rootId = getRootId(doc, mirror);
@@ -528,7 +536,7 @@ function serializeNode(
         newlyAddedElement,
         rootId,
         allowList,
-        blockExtraStyle
+        blockExtraStyle,
       });
     case n.TEXT_NODE:
       return serializeTextNode(n as Text, {
@@ -650,7 +658,7 @@ function serializeElementNode(
     newlyAddedElement = false,
     rootId,
     allowList,
-    blockExtraStyle
+    blockExtraStyle,
   } = options;
   const needBlock = _isBlockedElement(n, blockClass, blockSelector, allowList);
   const tagName = getValidTagName(n);
@@ -714,7 +722,7 @@ function serializeElementNode(
         value,
         maskInputOptions,
         maskInputFn,
-        allowList
+        allowList,
       });
     } else if (checked) {
       attributes.checked = checked;
@@ -834,7 +842,9 @@ function serializeElementNode(
     const { width, height } = n.getBoundingClientRect();
     attributes = {
       class: attributes.class,
-      style: [attributes.style, blockExtraStyle].filter(e => typeof e === 'string').join(' '),
+      style: [attributes.style, blockExtraStyle]
+        .filter((e) => typeof e === 'string')
+        .join(' '),
       rr_width: `${width}px`,
       rr_height: `${height}px`,
     };
@@ -1031,7 +1041,7 @@ export function serializeNodeWithId(
     keepIframeSrcFn = () => false,
     newlyAddedElement = false,
     allowList,
-    blockExtraStyle
+    blockExtraStyle,
   } = options;
   let { needsMask } = options;
   let { preserveWhiteSpace = true } = options;
@@ -1076,7 +1086,7 @@ export function serializeNodeWithId(
     keepIframeSrcFn,
     newlyAddedElement,
     allowList,
-    blockExtraStyle
+    blockExtraStyle,
   });
   if (!_serializedNode) {
     // TODO: dev only
@@ -1158,7 +1168,7 @@ export function serializeNodeWithId(
       stylesheetLoadTimeout,
       keepIframeSrcFn,
       allowList,
-      blockExtraStyle
+      blockExtraStyle,
     };
 
     if (
@@ -1230,7 +1240,7 @@ export function serializeNodeWithId(
             stylesheetLoadTimeout,
             keepIframeSrcFn,
             allowList,
-            blockExtraStyle
+            blockExtraStyle,
           });
 
           if (serializedIframeNode) {
@@ -1284,7 +1294,7 @@ export function serializeNodeWithId(
             stylesheetLoadTimeout,
             keepIframeSrcFn,
             allowList,
-            blockExtraStyle
+            blockExtraStyle,
           });
 
           if (serializedLinkNode) {
@@ -1357,7 +1367,7 @@ function snapshot(
     stylesheetLoadTimeout,
     keepIframeSrcFn = () => false,
     allowList = null,
-    blockExtraStyle = null
+    blockExtraStyle = null,
   } = options || {};
   const maskInputOptions: MaskInputOptions =
     maskAllInputs === true
@@ -1427,7 +1437,7 @@ function snapshot(
     keepIframeSrcFn,
     newlyAddedElement: false,
     allowList,
-    blockExtraStyle
+    blockExtraStyle,
   });
 }
 

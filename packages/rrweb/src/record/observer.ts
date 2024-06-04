@@ -420,7 +420,7 @@ function initInputObserver({
   maskInputFn,
   sampling,
   userTriggeredOnInput,
-  allowList
+  allowList,
 }: observerParam): listenerHandler {
   function eventHandler(event: Event) {
     let target = getEventTarget(event) as HTMLElement | null;
@@ -466,7 +466,7 @@ function initInputObserver({
         type,
         value: text,
         maskInputFn,
-        allowList
+        allowList,
       });
     }
     cbWithDedup(

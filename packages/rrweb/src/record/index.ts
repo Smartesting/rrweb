@@ -99,7 +99,7 @@ function record<T = eventWithTime>(
     ignoreCSSAttributes = new Set([]),
     errorHandler,
     allowList = null,
-    blockExtraStyle = null
+    blockExtraStyle = null,
   } = options;
 
   registerErrorHandler(errorHandler);
@@ -345,7 +345,7 @@ function record<T = eventWithTime>(
       keepIframeSrcFn,
       processedNodeManager,
       allowList,
-      blockExtraStyle
+      blockExtraStyle,
     },
     mirror,
   });
@@ -405,7 +405,7 @@ function record<T = eventWithTime>(
       },
       keepIframeSrcFn,
       allowList,
-      blockExtraStyle
+      blockExtraStyle,
     });
 
     if (!node) {
@@ -566,7 +566,7 @@ function record<T = eventWithTime>(
                   }),
               })) || [],
           allowList,
-          blockExtraStyle
+          blockExtraStyle,
         },
         hooks,
       );

@@ -1,4 +1,7 @@
-import type { elementNode, serializedNodeWithId } from '@smartesting/rrweb-snapshot';
+import type {
+  elementNode,
+  serializedNodeWithId,
+} from '@smartesting/rrweb-snapshot';
 import { stringifyRule } from '@smartesting/rrweb-snapshot';
 import type {
   adoptedStyleSheetCallback,

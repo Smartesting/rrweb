@@ -191,7 +191,7 @@ export default class MutationBuffer {
   private canvasManager: observerParam['canvasManager'];
   private processedNodeManager: observerParam['processedNodeManager'];
   private allowList: observerParam['allowList'];
-  private blockExtraStyle: observerParam['blockExtraStyle']
+  private blockExtraStyle: observerParam['blockExtraStyle'];
   private unattachedDoc: HTMLDocument;
 
   public init(options: MutationBufferParam) {
@@ -219,7 +219,7 @@ export default class MutationBuffer {
         'canvasManager',
         'processedNodeManager',
         'allowList',
-        'blockExtraStyle'
+        'blockExtraStyle',
       ] as const
     ).forEach((key) => {
       // just a type trick, the runtime result is correct
@@ -580,7 +580,7 @@ export default class MutationBuffer {
             type,
             value,
             maskInputFn: this.maskInputFn,
-            allowList: this.allowList
+            allowList: this.allowList,
           });
         }
         if (

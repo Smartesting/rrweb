@@ -112,8 +112,16 @@ describe('absolute url to stylesheet', () => {
 });
 
 describe('isBlockedElement()', () => {
-  const subject = (html: string, opt: Partial<{blockSelector: string, allowList: string | null}> = {}) =>
-    _isBlockedElement(render(html), 'rr-block', opt.blockSelector ?? null, opt.allowList ?? null);
+  const subject = (
+    html: string,
+    opt: Partial<{ blockSelector: string; allowList: string | null }> = {},
+  ) =>
+    _isBlockedElement(
+      render(html),
+      'rr-block',
+      opt.blockSelector ?? null,
+      opt.allowList ?? null,
+    );
 
   const render = (html: string): HTMLElement =>
     JSDOM.fragment(html).querySelector('div')!;
@@ -138,7 +146,10 @@ describe('isBlockedElement()', () => {
 
   it('does not block blocked selector inside the allow list', () => {
     expect(
-      subject('<div class="allow"></div><div data-rr-block /></div>', { blockSelector: '[data-rr-block]', allowList: '.allow' }),
+      subject('<div class="allow"></div><div data-rr-block /></div>', {
+        blockSelector: '[data-rr-block]',
+        allowList: '.allow',
+      }),
     ).toEqual(false);
   });
 });
@@ -323,8 +334,8 @@ describe('needMaskingText', () => {
       null,
       null,
       false,
-      true
-    )
+      true,
+    );
 
     testNeedMaskingText(
       'returns true if the element has the CSS class',
@@ -333,8 +344,8 @@ describe('needMaskingText', () => {
       null,
       null,
       false,
-      true
-    )
+      true,
+    );
 
     testNeedMaskingText(
       'returns true if the element is an child of a matching element and checkAncestors is true',
@@ -343,8 +354,8 @@ describe('needMaskingText', () => {
       null,
       null,
       true,
-      true
-    )
+      true,
+    );
 
     testNeedMaskingText(
       'returns true if the element is an child of a matching element and checkAncestors is true',
@@ -353,8 +364,8 @@ describe('needMaskingText', () => {
       null,
       null,
       true,
-      true
-    )
+      true,
+    );
 
     testNeedMaskingText(
       'returns false if the element does not have a class matching the regexp',
@@ -363,8 +374,8 @@ describe('needMaskingText', () => {
       null,
       null,
       false,
-      false
-    )
+      false,
+    );
 
     testNeedMaskingText(
       'returns false if the element does not have the CSS class',
@@ -373,8 +384,8 @@ describe('needMaskingText', () => {
       null,
       null,
       false,
-      false
-    )
+      false,
+    );
 
     testNeedMaskingText(
       'returns false if the element is an child of a matching element and checkAncestors is false',
@@ -383,8 +394,8 @@ describe('needMaskingText', () => {
       null,
       null,
       false,
-      false
-    )
+      false,
+    );
 
     testNeedMaskingText(
       'returns false if the element is an child of a matching element and checkAncestors is false',
@@ -393,9 +404,9 @@ describe('needMaskingText', () => {
       null,
       null,
       false,
-      false
-    )
-  })
+      false,
+    );
+  });
 
   describe('when using maskTextSelector', () => {
     testNeedMaskingText(
@@ -405,8 +416,8 @@ describe('needMaskingText', () => {
       '.masked',
       null,
       false,
-      true
-    )
+      true,
+    );
 
     testNeedMaskingText(
       'returns true if the element is an child of a matching element and checkAncestors is true',
@@ -415,8 +426,8 @@ describe('needMaskingText', () => {
       '.masked',
       null,
       true,
-      true
-    )
+      true,
+    );
 
     testNeedMaskingText(
       'returns false if the element does not match the selector',
@@ -425,9 +436,8 @@ describe('needMaskingText', () => {
       '.masked',
       null,
       false,
-      false
-    )
-
+      false,
+    );
 
     testNeedMaskingText(
       'returns false if the element is an child of a matching element and checkAncestors is false',
@@ -436,9 +446,9 @@ describe('needMaskingText', () => {
       '.masked',
       null,
       false,
-      false
-    )
-  })
+      false,
+    );
+  });
 
   describe('when allowList is specified', () => {
     testNeedMaskingText(
@@ -448,7 +458,7 @@ describe('needMaskingText', () => {
       null,
       '.main',
       false,
-      false
-    )
-  })
+      false,
+    );
+  });
 });
