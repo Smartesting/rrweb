@@ -1,4 +1,4 @@
-import type { ICanvas, Mirror, DataURLOptions } from 'rrweb-snapshot';
+import type { ICanvas, Mirror, DataURLOptions } from '@smartesting/rrweb-snapshot';
 import type {
   blockClass,
   canvasManagerMutationCallback,
@@ -8,9 +8,9 @@ import type {
   IWindow,
   listenerHandler,
   CanvasArg,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import { isBlocked } from '../../../utils';
-import { CanvasContext } from '@rrweb/types';
+import { CanvasContext } from '@smartesting/rrweb-types';
 import initCanvas2DMutationObserver from './2d';
 import initCanvasContextObserver from './canvas';
 import initCanvasWebGLMutationObserver from './webgl';

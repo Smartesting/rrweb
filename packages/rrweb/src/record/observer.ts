@@ -4,7 +4,7 @@ import {
   Mirror,
   getInputType,
   toLowerCase,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import type { FontFaceSet } from 'css-font-loading-module';
 import {
   throttle,
@@ -47,7 +47,7 @@ import {
   SelectionRange,
   selectionCallback,
   customElementCallback,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import MutationBuffer from './mutation';
 import { callbackWrapper } from './error-handler';
 
@@ -420,6 +420,7 @@ function initInputObserver({
   maskInputFn,
   sampling,
   userTriggeredOnInput,
+  allowList
 }: observerParam): listenerHandler {
   function eventHandler(event: Event) {
     let target = getEventTarget(event) as HTMLElement | null;
@@ -465,7 +466,7 @@ function initInputObserver({
         type,
         value: text,
         maskInputFn,
-        allowList: this.allowList
+        allowList
       });
     }
     cbWithDedup(

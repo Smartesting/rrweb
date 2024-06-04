@@ -8,9 +8,9 @@ import type {
   IWindow,
   DeprecatedMirror,
   textMutation,
-} from '@rrweb/types';
-import type { IMirror, Mirror } from 'rrweb-snapshot';
-import { isShadowRoot, IGNORED_NODE, classMatchesRegex } from 'rrweb-snapshot';
+} from '@smartesting/rrweb-types';
+import type { IMirror, Mirror } from '@smartesting/rrweb-snapshot';
+import { isShadowRoot, IGNORED_NODE, classMatchesRegex } from '@smartesting/rrweb-snapshot';
 import type { RRNode, RRIFrameElement } from 'rrdom';
 
 export function on(

@@ -9,7 +9,7 @@ import {
   attributes,
   serializedElementNodeWithId,
   toLowerCase,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import {
   RRDocument,
   createOrGetNode,
@@ -62,7 +62,7 @@ import {
   styleSheetRuleData,
   styleDeclarationData,
   adoptedStyleSheetData,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import {
   polyfill,
   queueToResolveTrees,

@@ -5,7 +5,7 @@ import type {
   MaskInputFn,
   MaskTextFn,
   DataURLOptions,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import type { PackFn, UnpackFn } from './packer/base';
 import type { IframeManager } from './record/iframe-manager';
 import type { ShadowDomManager } from './record/shadow-dom-manager';
@@ -37,7 +37,7 @@ import type {
   styleDeclarationCallback,
   styleSheetRuleCallback,
   viewportResizeCallback,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import type ProcessedNodeManager from './record/processed-node-manager';
 
 export type recordOptions<T> = {
