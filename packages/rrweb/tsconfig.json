@@ -23,10 +23,10 @@
       "path": "../types"
     },
     {
-      "path": "../rrdom"
+      "path": "../rrweb-snapshot"
     },
     {
-      "path": "../rrweb-snapshot"
+      "path": "../rrdom"
     }
   ],
   "exclude": [

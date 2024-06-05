@@ -3,7 +3,7 @@ import {
   MediaInteractions,
   ReplayerEvents,
 } from '@smartesting/rrweb-types';
-import type { RRMediaElement } from 'rrdom/es';
+import type { RRMediaElement } from '@smartesting/rrdom/es';
 import type { createPlayerService, createSpeedService } from '../machine';
 import type { Mirror, mediaAttributes } from '@smartesting/rrweb-snapshot';
 import type { mediaInteractionData } from '@smartesting/rrweb-types';

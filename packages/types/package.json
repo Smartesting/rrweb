@@ -25,14 +25,14 @@
   },
   "license": "MIT",
   "type": "module",
-  "main": "./dist/types.umd.cjs",
-  "module": "./dist/types.js",
+  "main": "./dist/rrweb-types.umd.cjs",
+  "module": "./dist/rrweb-types.js",
   "typings": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/types.js",
-      "require": "./dist/types.umd.cjs"
+      "import": "./dist/rrweb-types.js",
+      "require": "./dist/rrweb-types.umd.cjs"
     }
   },
   "files": [
