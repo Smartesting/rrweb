@@ -3,7 +3,7 @@ import {
   MaskInputOptions,
   SlimDOMOptions,
   snapshot,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import { initObservers, mutationBuffers } from './observer';
 import {
   getWindowHeight,
@@ -30,7 +30,7 @@ import {
   listenerHandler,
   mutationCallbackParam,
   scrollCallback,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import { IframeManager } from './iframe-manager';
 import { ShadowDomManager } from './shadow-dom-manager';
 import { CanvasManager } from './observers/canvas/canvas-manager';
@@ -102,6 +102,8 @@ function record<T = eventWithTime>(
     keepIframeSrcFn = () => false,
     ignoreCSSAttributes = new Set([]),
     errorHandler,
+    allowList = null,
+    blockExtraStyle = null,
     window = globalWindow,
   } = options;
   const doc = window.document;
@@ -348,6 +350,8 @@ function record<T = eventWithTime>(
       canvasManager,
       keepIframeSrcFn,
       processedNodeManager,
+      allowList,
+      blockExtraStyle,
     },
     mirror,
     doc: doc,
@@ -407,6 +411,8 @@ function record<T = eventWithTime>(
         stylesheetManager.attachLinkElement(linkEl, childSn);
       },
       keepIframeSrcFn,
+      allowList,
+      blockExtraStyle,
     });
 
     if (!node) {
@@ -566,6 +572,8 @@ function record<T = eventWithTime>(
                     },
                   }),
               })) || [],
+          allowList,
+          blockExtraStyle,
         },
         hooks,
       );

@@ -8,14 +8,14 @@ import {
   EventType,
   IncrementalSource,
   CanvasContext,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import {
   assertSnapshot,
   launchPuppeteer,
   stripBase64,
   waitForRAF,
 } from '../utils';
-import type { ICanvas } from 'rrweb-snapshot';
+import type { ICanvas } from '@smartesting/rrweb-snapshot';
 
 interface ISuite {
   code: string;

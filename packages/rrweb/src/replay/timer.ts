@@ -3,7 +3,7 @@ import {
   eventWithTime,
   EventType,
   IncrementalSource,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 
 export class Timer {
   public timeOffset = 0;

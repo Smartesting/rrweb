@@ -24,8 +24,8 @@ const basePlugins = [
 const baseConfigs = [
   {
     input: './src/index.ts',
-    name: pkg.name,
-    path: pkg.name,
+    name: 'smartesting_rrdom',
+    path: 'smartesting_rrdom',
   },
 ];
 
@@ -40,7 +40,7 @@ for (let config of baseConfigs) {
       output: [
         {
           format: 'esm',
-          file: pkg.module.replace(pkg.name, config.path),
+          file: 'smartesting-rrdom',
         },
       ],
     },
@@ -77,7 +77,7 @@ for (let config of baseConfigs) {
       output: [
         {
           format: 'cjs',
-          file: pkg.main.replace(pkg.name, config.path),
+          file: 'smartesting-rrdom',
         },
       ],
     },

@@ -5,12 +5,12 @@ import type {
   MaskTextFn,
   Mirror,
   SlimDOMOptions,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import type { PackFn, UnpackFn } from './packer/base';
 import type { IframeManager } from './record/iframe-manager';
 import type { ShadowDomManager } from './record/shadow-dom-manager';
 import type { Replayer } from './replay';
-import type { RRNode } from 'rrdom';
+import type { RRNode } from '@smartesting/rrdom';
 import type { CanvasManager } from './record/observers/canvas/canvas-manager';
 import type { StylesheetManager } from './record/stylesheet-manager';
 import type {
@@ -37,7 +37,7 @@ import type {
   styleDeclarationCallback,
   styleSheetRuleCallback,
   viewportResizeCallback,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import type ProcessedNodeManager from './record/processed-node-manager';
 
 export type recordOptions<T> = {
@@ -73,6 +73,8 @@ export type recordOptions<T> = {
   mousemoveWait?: number;
   keepIframeSrcFn?: KeepIframeSrcFn;
   errorHandler?: ErrorHandler;
+  allowList?: string | null;
+  blockExtraStyle?: string | null;
   window?: IWindow;
 };
 
@@ -126,6 +128,8 @@ export type observerParam = {
     callback: (...arg: Array<unknown>) => void;
     options: unknown;
   }>;
+  allowList: string | null;
+  blockExtraStyle: string | null;
 };
 
 export type MutationBufferParam = Pick<
@@ -151,6 +155,8 @@ export type MutationBufferParam = Pick<
   | 'shadowDomManager'
   | 'canvasManager'
   | 'processedNodeManager'
+  | 'allowList'
+  | 'blockExtraStyle'
 >;
 
 export type ReplayPlugin = {

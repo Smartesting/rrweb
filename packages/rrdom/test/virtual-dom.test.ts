@@ -15,7 +15,7 @@ import {
   NodeType,
   NodeType as RRNodeType,
   textNode,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import {
   buildFromDom,
   buildFromNode,

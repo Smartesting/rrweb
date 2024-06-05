@@ -1,11 +1,11 @@
-import type { Mirror } from 'rrweb-snapshot';
+import type { Mirror } from '@smartesting/rrweb-snapshot';
 import {
   blockClass,
   CanvasContext,
   canvasManagerMutationCallback,
   IWindow,
   listenerHandler,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import { hookSetter, isBlocked, patch } from '../../../utils';
 import { serializeArgs } from './serialize-args';
 

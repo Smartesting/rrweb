@@ -10,7 +10,7 @@ import {
   isNativeShadowDom,
   getInputType,
   toLowerCase,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import type { observerParam, MutationBufferParam } from '../types';
 import type {
   mutationRecord,
@@ -19,7 +19,7 @@ import type {
   removedNodeMutation,
   addedNodeMutation,
   Optional,
-} from '@rrweb/types';
+} from '@smartesting/rrweb-types';
 import {
   isBlocked,
   isAncestorRemoved,
@@ -190,6 +190,8 @@ export default class MutationBuffer {
   private shadowDomManager: observerParam['shadowDomManager'];
   private canvasManager: observerParam['canvasManager'];
   private processedNodeManager: observerParam['processedNodeManager'];
+  private allowList: observerParam['allowList'];
+  private blockExtraStyle: observerParam['blockExtraStyle'];
   private unattachedDoc: HTMLDocument;
 
   public init(options: MutationBufferParam) {
@@ -216,6 +218,8 @@ export default class MutationBuffer {
         'shadowDomManager',
         'canvasManager',
         'processedNodeManager',
+        'allowList',
+        'blockExtraStyle',
       ] as const
     ).forEach((key) => {
       // just a type trick, the runtime result is correct
@@ -336,6 +340,8 @@ export default class MutationBuffer {
         onStylesheetLoad: (link, childSn) => {
           this.stylesheetManager.attachLinkElement(link, childSn);
         },
+        allowList: this.allowList,
+        blockExtraStyle: this.blockExtraStyle,
       });
       if (sn) {
         adds.push({
@@ -547,6 +553,7 @@ export default class MutationBuffer {
                 m.target,
                 this.maskTextClass,
                 this.maskTextSelector,
+                this.allowList,
                 true, // checkAncestors
               ) && value
                 ? this.maskTextFn
@@ -573,6 +580,7 @@ export default class MutationBuffer {
             type,
             value,
             maskInputFn: this.maskInputFn,
+            allowList: this.allowList,
           });
         }
         if (
