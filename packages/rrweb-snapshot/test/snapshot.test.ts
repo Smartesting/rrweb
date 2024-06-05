@@ -169,6 +169,7 @@ describe('style elements', () => {
       maskInputFn: undefined,
       slimDOMOptions: {},
       allowList: null,
+      blockExtraStyle: null,
     });
   };
 
@@ -216,6 +217,7 @@ describe('scrollTop/scrollLeft', () => {
       slimDOMOptions: {},
       newlyAddedElement: false,
       allowList: null,
+      blockExtraStyle: null,
     });
   };
 
@@ -255,6 +257,7 @@ describe('form', () => {
       slimDOMOptions: {},
       newlyAddedElement: false,
       allowList: null,
+      blockExtraStyle: null,
     });
   };
 
