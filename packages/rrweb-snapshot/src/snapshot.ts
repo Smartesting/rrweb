@@ -776,9 +776,8 @@ function serializeElementNode(
       canvasCtx = canvasService.getContext('2d');
     }
     const image = n as HTMLImageElement;
-    const imageSrc: string =
-      image.currentSrc || image.getAttribute('src') || '<unknown-src>';
-    const priorCrossOrigin = image.crossOrigin;
+    const oldValue = image.crossOrigin;
+    image.crossOrigin = 'anonymous';
     const recordInlineImage = () => {
       image.removeEventListener('load', recordInlineImage);
       try {
@@ -790,23 +789,13 @@ function serializeElementNode(
           dataURLOptions.quality,
         );
       } catch (err) {
-        if (image.crossOrigin !== 'anonymous') {
-          image.crossOrigin = 'anonymous';
-          if (image.complete && image.naturalWidth !== 0)
-            recordInlineImage(); // too early due to image reload
-          else image.addEventListener('load', recordInlineImage);
-          return;
-        } else {
-          console.warn(
-            `Cannot inline img src=${imageSrc}! Error: ${err as string}`,
-          );
-        }
+        console.warn(
+          `Cannot inline img src=${image.currentSrc}! Error: ${err as string}`,
+        );
       }
-      if (image.crossOrigin === 'anonymous') {
-        priorCrossOrigin
-          ? (attributes.crossOrigin = priorCrossOrigin)
-          : image.removeAttribute('crossorigin');
-      }
+      oldValue
+        ? (attributes.crossOrigin = oldValue)
+        : image.removeAttribute('crossorigin');
     };
     // The image content may not have finished loading yet.
     if (image.complete && image.naturalWidth !== 0) recordInlineImage();
