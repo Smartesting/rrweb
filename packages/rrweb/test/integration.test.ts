@@ -13,7 +13,11 @@ import {
   ISuite,
 } from './utils';
 import type { recordOptions } from '../src/types';
-import { eventWithTime, EventType, RecordPlugin } from '@smartesting/rrweb-types';
+import {
+  eventWithTime,
+  EventType,
+  RecordPlugin,
+} from '@smartesting/rrweb-types';
 import { visitSnapshot, NodeType } from '@smartesting/rrweb-snapshot';
 
 describe('record integration tests', function (this: ISuite) {
