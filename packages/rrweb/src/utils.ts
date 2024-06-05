@@ -1,22 +1,22 @@
 import type {
-  throttleOptions,
-  listenerHandler,
-  hookResetter,
-  blockClass,
   addedNodeMutation,
-  DocumentDimension,
-  IWindow,
+  blockClass,
   DeprecatedMirror,
+  DocumentDimension,
+  hookResetter,
+  IWindow,
+  listenerHandler,
   textMutation,
+  throttleOptions,
 } from '@rrweb/types';
 import type { IMirror, Mirror } from 'rrweb-snapshot';
-import { isShadowRoot, IGNORED_NODE, classMatchesRegex } from 'rrweb-snapshot';
-import type { RRNode, RRIFrameElement } from 'rrdom';
+import { classMatchesRegex, IGNORED_NODE, isShadowRoot } from 'rrweb-snapshot';
+import type { RRIFrameElement, RRNode } from 'rrdom';
 
 export function on(
   type: string,
   fn: EventListenerOrEventListenerObject,
-  target: Document | IWindow = document,
+  target: Document | IWindow,
 ): listenerHandler {
   const options = { capture: true, passive: true };
   target.addEventListener(type, fn, options);
@@ -199,7 +199,8 @@ export function getWindowScroll(win: Window) {
   };
 }
 
-export function getWindowHeight(): number {
+export function getWindowHeight(window: IWindow): number {
+  const document = window.document;
   return (
     window.innerHeight ||
     (document.documentElement && document.documentElement.clientHeight) ||
@@ -207,7 +208,8 @@ export function getWindowHeight(): number {
   );
 }
 
-export function getWindowWidth(): number {
+export function getWindowWidth(window: IWindow): number {
+  const document = window.document;
   return (
     window.innerWidth ||
     (document.documentElement && document.documentElement.clientWidth) ||
@@ -588,4 +590,10 @@ export function inDom(n: Node): boolean {
   const doc = n.ownerDocument;
   if (!doc) return false;
   return doc.contains(n) || shadowHostInDom(n);
+}
+
+export function getWindow(doc: Document): IWindow | null {
+  const win = doc.defaultView;
+  if (!win) console.log('No window attached to document', doc);
+  return win as IWindow;
 }

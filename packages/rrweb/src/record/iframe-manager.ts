@@ -2,12 +2,12 @@ import type { Mirror, serializedNodeWithId } from 'rrweb-snapshot';
 import { genId, NodeType } from 'rrweb-snapshot';
 import type { CrossOriginIframeMessageEvent } from '../types';
 import CrossOriginIframeMirror from './cross-origin-iframe-mirror';
-import { EventType, IncrementalSource } from '@rrweb/types';
 import type {
-  eventWithTime,
   eventWithoutTime,
+  eventWithTime,
   mutationCallBack,
 } from '@rrweb/types';
+import { EventType, IncrementalSource, type IWindow } from '@rrweb/types';
 import type { StylesheetManager } from './stylesheet-manager';
 
 export class IframeManager {
@@ -19,6 +19,7 @@ export class IframeManager {
   public crossOriginIframeRootIdMap: WeakMap<HTMLIFrameElement, number> =
     new WeakMap();
   private mirror: Mirror;
+  private win: IWindow;
   private mutationCb: mutationCallBack;
   private wrappedEmit: (e: eventWithoutTime, isCheckout?: boolean) => void;
   private loadListener?: (iframeEl: HTMLIFrameElement) => unknown;
@@ -31,6 +32,7 @@ export class IframeManager {
     stylesheetManager: StylesheetManager;
     recordCrossOriginIframes: boolean;
     wrappedEmit: (e: eventWithoutTime, isCheckout?: boolean) => void;
+    win: IWindow;
   }) {
     this.mutationCb = options.mutationCb;
     this.wrappedEmit = options.wrappedEmit;
@@ -42,8 +44,9 @@ export class IframeManager {
       ),
     );
     this.mirror = options.mirror;
+    this.win = options.win;
     if (this.recordCrossOriginIframes) {
-      window.addEventListener('message', this.handleMessage.bind(this));
+      this.win.addEventListener('message', this.handleMessage.bind(this));
     }
   }
 

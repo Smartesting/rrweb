@@ -1,52 +1,53 @@
 import {
+  getInputType,
   MaskInputOptions,
   maskInputValue,
   Mirror,
-  getInputType,
   toLowerCase,
 } from 'rrweb-snapshot';
 import type { FontFaceSet } from 'css-font-loading-module';
 import {
-  throttle,
-  on,
-  hookSetter,
-  getWindowScroll,
+  getWindow,
   getWindowHeight,
+  getWindowScroll,
   getWindowWidth,
+  hookSetter,
   isBlocked,
   legacy_isTouchEvent,
+  nowTimestamp,
+  on,
   patch,
   StyleSheetMirror,
-  nowTimestamp,
+  throttle,
 } from '../utils';
-import type { observerParam, MutationBufferParam } from '../types';
+import type { MutationBufferParam, observerParam } from '../types';
 import {
-  mutationCallBack,
-  mousemoveCallBack,
-  mousePosition,
-  mouseInteractionCallBack,
-  MouseInteractions,
-  PointerTypes,
-  listenerHandler,
-  scrollCallback,
-  styleSheetRuleCallback,
-  viewportResizeCallback,
-  inputValue,
-  inputCallback,
-  hookResetter,
-  IncrementalSource,
-  hooksParam,
   Arguments,
-  mediaInteractionCallback,
-  MediaInteractions,
   canvasMutationCallback,
+  customElementCallback,
   fontCallback,
   fontParam,
-  styleDeclarationCallback,
+  hookResetter,
+  hooksParam,
+  IncrementalSource,
+  inputCallback,
+  inputValue,
   IWindow,
-  SelectionRange,
+  listenerHandler,
+  mediaInteractionCallback,
+  MediaInteractions,
+  mouseInteractionCallBack,
+  MouseInteractions,
+  mousemoveCallBack,
+  mousePosition,
+  mutationCallBack,
+  PointerTypes,
+  scrollCallback,
   selectionCallback,
-  customElementCallback,
+  SelectionRange,
+  styleDeclarationCallback,
+  styleSheetRuleCallback,
+  viewportResizeCallback,
 } from '@rrweb/types';
 import MutationBuffer from './mutation';
 import { callbackWrapper } from './error-handler';
@@ -87,13 +88,15 @@ function getEventTarget(event: Event | NonStandardEvent): EventTarget | null {
 export function initMutationObserver(
   options: MutationBufferParam,
   rootEl: Node,
-): MutationObserver {
+): MutationObserver | undefined {
+  const win = getWindow(options.doc);
+  if (!win) return undefined;
   const mutationBuffer = new MutationBuffer();
   mutationBuffers.push(mutationBuffer);
   // see mutation.ts for details
   mutationBuffer.init(options);
   let mutationObserverCtor =
-    window.MutationObserver ||
+    win.MutationObserver ||
     /**
      * Some websites may disable MutationObserver by removing it from the window object.
      * If someone is using rrweb to build a browser extention or things like it, they
@@ -102,18 +105,18 @@ export function initMutationObserver(
      * Then they can do this to store the native MutationObserver:
      * window.__rrMutationObserver = MutationObserver
      */
-    (window as WindowWithStoredMutationObserver).__rrMutationObserver;
-  const angularZoneSymbol = (
-    window as WindowWithAngularZone
-  )?.Zone?.__symbol__?.('MutationObserver');
+    (win as WindowWithStoredMutationObserver).__rrMutationObserver;
+  const angularZoneSymbol = (win as WindowWithAngularZone)?.Zone?.__symbol__?.(
+    'MutationObserver',
+  );
   if (
     angularZoneSymbol &&
-    (window as unknown as Record<string, typeof MutationObserver>)[
+    (win as unknown as Record<string, typeof MutationObserver>)[
       angularZoneSymbol
     ]
   ) {
     mutationObserverCtor = (
-      window as unknown as Record<string, typeof MutationObserver>
+      win as unknown as Record<string, typeof MutationObserver>
     )[angularZoneSymbol];
   }
   const observer = new (mutationObserverCtor as new (
@@ -226,6 +229,7 @@ function initMouseInteractionObserver({
   blockSelector,
   sampling,
 }: observerParam): listenerHandler {
+  const win = getWindow(doc);
   if (sampling.mouseInteraction === false) {
     return () => {
       //
@@ -315,7 +319,7 @@ function initMouseInteractionObserver({
     .forEach((eventKey: keyof typeof MouseInteractions) => {
       let eventName = toLowerCase(eventKey);
       const handler = getHandler(eventKey);
-      if (window.PointerEvent) {
+      if (win?.PointerEvent) {
         switch (MouseInteractions[eventKey]) {
           case MouseInteractions.MouseDown:
           case MouseInteractions.MouseUp:
@@ -389,8 +393,8 @@ function initViewportResizeObserver(
   const updateDimension = callbackWrapper(
     throttle(
       callbackWrapper(() => {
-        const height = getWindowHeight();
-        const width = getWindowWidth();
+        const height = getWindowHeight(win);
+        const width = getWindowWidth(win);
         if (lastH !== height || lastW !== width) {
           viewportResizeCb({
             width: Number(width),
@@ -567,17 +571,17 @@ type GroupingCSSRuleTypes =
   | typeof CSSSupportsRule
   | typeof CSSConditionRule;
 
-function getNestedCSSRulePositions(rule: CSSRule): number[] {
+function getNestedCSSRulePositions(rule: CSSRule, win: IWindow): number[] {
   const positions: number[] = [];
   function recurse(childRule: CSSRule, pos: number[]) {
     if (
-      (hasNestedCSSRule('CSSGroupingRule') &&
+      (hasNestedCSSRule('CSSGroupingRule', win) &&
         childRule.parentRule instanceof CSSGroupingRule) ||
-      (hasNestedCSSRule('CSSMediaRule') &&
+      (hasNestedCSSRule('CSSMediaRule', win) &&
         childRule.parentRule instanceof CSSMediaRule) ||
-      (hasNestedCSSRule('CSSSupportsRule') &&
+      (hasNestedCSSRule('CSSSupportsRule', win) &&
         childRule.parentRule instanceof CSSSupportsRule) ||
-      (hasNestedCSSRule('CSSConditionRule') &&
+      (hasNestedCSSRule('CSSConditionRule', win) &&
         childRule.parentRule instanceof CSSConditionRule)
     ) {
       const rules = Array.from(
@@ -754,20 +758,20 @@ function initStyleSheetObserver(
   const supportedNestedCSSRuleTypes: {
     [key: string]: GroupingCSSRuleTypes;
   } = {};
-  if (canMonkeyPatchNestedCSSRule('CSSGroupingRule')) {
+  if (canMonkeyPatchNestedCSSRule('CSSGroupingRule', win)) {
     supportedNestedCSSRuleTypes.CSSGroupingRule = win.CSSGroupingRule;
   } else {
     // Some browsers (Safari) don't support CSSGroupingRule
     // https://caniuse.com/?search=cssgroupingrule
     // fall back to monkey patching classes that would have inherited from CSSGroupingRule
 
-    if (canMonkeyPatchNestedCSSRule('CSSMediaRule')) {
+    if (canMonkeyPatchNestedCSSRule('CSSMediaRule', win)) {
       supportedNestedCSSRuleTypes.CSSMediaRule = win.CSSMediaRule;
     }
-    if (canMonkeyPatchNestedCSSRule('CSSConditionRule')) {
+    if (canMonkeyPatchNestedCSSRule('CSSConditionRule', win)) {
       supportedNestedCSSRuleTypes.CSSConditionRule = win.CSSConditionRule;
     }
-    if (canMonkeyPatchNestedCSSRule('CSSSupportsRule')) {
+    if (canMonkeyPatchNestedCSSRule('CSSSupportsRule', win)) {
       supportedNestedCSSRuleTypes.CSSSupportsRule = win.CSSSupportsRule;
     }
   }
@@ -812,7 +816,7 @@ function initStyleSheetObserver(
                   {
                     rule,
                     index: [
-                      ...getNestedCSSRulePositions(thisArg),
+                      ...getNestedCSSRulePositions(thisArg, win),
                       index || 0, // defaults to 0
                     ],
                   },
@@ -847,7 +851,9 @@ function initStyleSheetObserver(
                 id,
                 styleId,
                 removes: [
-                  { index: [...getNestedCSSRulePositions(thisArg), index] },
+                  {
+                    index: [...getNestedCSSRulePositions(thisArg, win), index],
+                  },
                 ],
               });
             }
@@ -974,7 +980,7 @@ function initStyleDeclarationObserver(
               priority,
             },
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            index: getNestedCSSRulePositions(thisArg.parentRule!),
+            index: getNestedCSSRulePositions(thisArg.parentRule!, win),
           });
         }
         return target.apply(thisArg, argumentsList);
@@ -1010,7 +1016,7 @@ function initStyleDeclarationObserver(
               property,
             },
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            index: getNestedCSSRulePositions(thisArg.parentRule!),
+            index: getNestedCSSRulePositions(thisArg.parentRule!, win),
           });
         }
         return target.apply(thisArg, argumentsList);
@@ -1070,7 +1076,7 @@ function initMediaInteractionObserver({
 }
 
 function initFontObserver({ fontCb, doc }: observerParam): listenerHandler {
-  const win = doc.defaultView as IWindow;
+  const win = getWindow(doc);
   if (!win) {
     return () => {
       //
@@ -1133,7 +1139,6 @@ function initFontObserver({ fontCb, doc }: observerParam): listenerHandler {
 function initSelectionObserver(param: observerParam): listenerHandler {
   const { doc, mirror, blockClass, blockSelector, selectionCb } = param;
   let collapsed = true;
-
   const updateSelection = callbackWrapper(() => {
     const selection = doc.getSelection();
 
@@ -1168,14 +1173,14 @@ function initSelectionObserver(param: observerParam): listenerHandler {
 
   updateSelection();
 
-  return on('selectionchange', updateSelection);
+  return on('selectionchange', updateSelection, doc);
 }
 
 function initCustomElementObserver({
   doc,
   customElementCb,
 }: observerParam): listenerHandler {
-  const win = doc.defaultView as IWindow;
+  const win = getWindow(doc);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   if (!win || !win.customElements) return () => {};
   const restoreHandler = patch(
@@ -1309,7 +1314,7 @@ export function initObservers(
   o: observerParam,
   hooks: hooksParam = {},
 ): listenerHandler {
-  const currentWindow = o.doc.defaultView; // basically document.window
+  const currentWindow = getWindow(o.doc); // basically document.window
   if (!currentWindow) {
     return () => {
       //
@@ -1384,17 +1389,20 @@ type CSSGroupingProp =
   | 'CSSSupportsRule'
   | 'CSSConditionRule';
 
-function hasNestedCSSRule(prop: CSSGroupingProp): boolean {
-  return typeof window[prop] !== 'undefined';
+function hasNestedCSSRule(prop: CSSGroupingProp, win: IWindow): boolean {
+  return typeof win[prop] !== 'undefined';
 }
 
-function canMonkeyPatchNestedCSSRule(prop: CSSGroupingProp): boolean {
+function canMonkeyPatchNestedCSSRule(
+  prop: CSSGroupingProp,
+  win: IWindow,
+): boolean {
   return Boolean(
-    typeof window[prop] !== 'undefined' &&
+    typeof win[prop] !== 'undefined' &&
       // Note: Generally, this check _shouldn't_ be necessary
       // However, in some scenarios (e.g. jsdom) this can sometimes fail, so we check for it here
-      window[prop].prototype &&
-      'insertRule' in window[prop].prototype &&
-      'deleteRule' in window[prop].prototype,
+      win[prop].prototype &&
+      'insertRule' in win[prop].prototype &&
+      'deleteRule' in win[prop].prototype,
   );
 }

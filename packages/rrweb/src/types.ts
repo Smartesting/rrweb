@@ -1,10 +1,10 @@
 import type {
-  Mirror,
-  MaskInputOptions,
-  SlimDOMOptions,
-  MaskInputFn,
-  MaskTextFn,
   DataURLOptions,
+  MaskInputFn,
+  MaskInputOptions,
+  MaskTextFn,
+  Mirror,
+  SlimDOMOptions,
 } from 'rrweb-snapshot';
 import type { PackFn, UnpackFn } from './packer/base';
 import type { IframeManager } from './record/iframe-manager';
@@ -73,6 +73,7 @@ export type recordOptions<T> = {
   mousemoveWait?: number;
   keepIframeSrcFn?: KeepIframeSrcFn;
   errorHandler?: ErrorHandler;
+  window?: IWindow;
 };
 
 export type observerParam = {

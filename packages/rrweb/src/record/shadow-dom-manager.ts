@@ -1,15 +1,15 @@
 import type { MutationBufferParam } from '../types';
 import type {
   mutationCallBack,
-  scrollCallback,
   SamplingStrategy,
+  scrollCallback,
 } from '@rrweb/types';
 import {
+  initAdoptedStyleSheetObserver,
   initMutationObserver,
   initScrollObserver,
-  initAdoptedStyleSheetObserver,
 } from './observer';
-import { patch, inDom } from '../utils';
+import { inDom, patch } from '../utils';
 import type { Mirror } from 'rrweb-snapshot';
 import { isNativeShadowDom } from 'rrweb-snapshot';
 
@@ -26,6 +26,7 @@ export class ShadowDomManager {
   private scrollCb: scrollCallback;
   private bypassOptions: BypassOptions;
   private mirror: Mirror;
+  private doc: Document;
   private restoreHandlers: (() => void)[] = [];
 
   constructor(options: {
@@ -33,11 +34,13 @@ export class ShadowDomManager {
     scrollCb: scrollCallback;
     bypassOptions: BypassOptions;
     mirror: Mirror;
+    doc: Document;
   }) {
     this.mutationCb = options.mutationCb;
     this.scrollCb = options.scrollCb;
     this.bypassOptions = options.bypassOptions;
     this.mirror = options.mirror;
+    this.doc = options.doc;
 
     this.init();
   }
@@ -45,7 +48,7 @@ export class ShadowDomManager {
   public init() {
     this.reset();
     // Patch 'attachShadow' to observe newly added shadow doms.
-    this.patchAttachShadow(Element, document);
+    this.patchAttachShadow(Element, this.doc);
   }
 
   public addShadowRoot(shadowRoot: ShadowRoot, doc: Document) {
@@ -62,7 +65,7 @@ export class ShadowDomManager {
       },
       shadowRoot,
     );
-    this.restoreHandlers.push(() => observer.disconnect());
+    if (observer) this.restoreHandlers.push(() => observer.disconnect());
     this.restoreHandlers.push(
       initScrollObserver({
         ...this.bypassOptions,

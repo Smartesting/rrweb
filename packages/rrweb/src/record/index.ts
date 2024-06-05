@@ -1,23 +1,28 @@
 import {
-  snapshot,
+  createMirror,
   MaskInputOptions,
   SlimDOMOptions,
-  createMirror,
+  snapshot,
 } from 'rrweb-snapshot';
 import { initObservers, mutationBuffers } from './observer';
 import {
-  on,
-  getWindowWidth,
   getWindowHeight,
   getWindowScroll,
-  polyfill,
+  getWindowWidth,
   hasShadowRoot,
   isSerializedIframe,
   isSerializedStylesheet,
   nowTimestamp,
+  on,
+  polyfill,
 } from '../utils';
-import type { recordOptions } from '../types';
+import type {
+  CrossOriginIframeMessageEventContent,
+  recordOptions,
+} from '../types';
 import {
+  adoptedStyleSheetParam,
+  canvasMutationParam,
   EventType,
   eventWithoutTime,
   eventWithTime,
@@ -25,10 +30,7 @@ import {
   listenerHandler,
   mutationCallbackParam,
   scrollCallback,
-  canvasMutationParam,
-  adoptedStyleSheetParam,
 } from '@rrweb/types';
-import type { CrossOriginIframeMessageEventContent } from '../types';
 import { IframeManager } from './iframe-manager';
 import { ShadowDomManager } from './shadow-dom-manager';
 import { CanvasManager } from './observers/canvas/canvas-manager';
@@ -61,6 +63,8 @@ try {
 }
 
 const mirror = createMirror();
+const globalWindow = window;
+
 function record<T = eventWithTime>(
   options: recordOptions<T> = {},
 ): listenerHandler | undefined {
@@ -98,8 +102,9 @@ function record<T = eventWithTime>(
     keepIframeSrcFn = () => false,
     ignoreCSSAttributes = new Set([]),
     errorHandler,
+    window = globalWindow,
   } = options;
-
+  const doc = window.document;
   registerErrorHandler(errorHandler);
 
   const inEmittingFrame = recordCrossOriginIframes
@@ -292,6 +297,7 @@ function record<T = eventWithTime>(
     stylesheetManager: stylesheetManager,
     recordCrossOriginIframes,
     wrappedEmit,
+    win: window,
   });
 
   /**
@@ -344,6 +350,7 @@ function record<T = eventWithTime>(
       processedNodeManager,
     },
     mirror,
+    doc: doc,
   });
 
   takeFullSnapshot = (isCheckout = false) => {
@@ -355,8 +362,8 @@ function record<T = eventWithTime>(
         type: EventType.Meta,
         data: {
           href: window.location.href,
-          width: getWindowWidth(),
-          height: getWindowHeight(),
+          width: getWindowWidth(window),
+          height: getWindowHeight(window),
         },
       },
       isCheckout,
@@ -368,7 +375,7 @@ function record<T = eventWithTime>(
     shadowDomManager.init();
 
     mutationBuffers.forEach((buf) => buf.lock()); // don't allow any mirror modifications during snapshotting
-    const node = snapshot(document, {
+    const node = snapshot(doc, {
       mirror,
       blockClass,
       blockSelector,
@@ -389,7 +396,7 @@ function record<T = eventWithTime>(
           stylesheetManager.trackLinkElement(n as HTMLLinkElement);
         }
         if (hasShadowRoot(n)) {
-          shadowDomManager.addShadowRoot(n.shadowRoot, document);
+          shadowDomManager.addShadowRoot(n.shadowRoot, doc);
         }
       },
       onIframeLoad: (iframe, childSn) => {
@@ -419,10 +426,10 @@ function record<T = eventWithTime>(
     mutationBuffers.forEach((buf) => buf.unlock()); // generate & emit any mutations that happened during snapshotting, as can now apply against the newly built mirror
 
     // Some old browsers don't support adoptedStyleSheets.
-    if (document.adoptedStyleSheets && document.adoptedStyleSheets.length > 0)
+    if (doc.adoptedStyleSheets && doc.adoptedStyleSheets.length > 0)
       stylesheetManager.adoptStyleSheets(
-        document.adoptedStyleSheets,
-        mirror.getId(document),
+        doc.adoptedStyleSheets,
+        mirror.getId(doc),
       );
   };
 
@@ -575,23 +582,24 @@ function record<T = eventWithTime>(
 
     const init = () => {
       takeFullSnapshot();
-      handlers.push(observe(document));
+      handlers.push(observe(doc));
       recording = true;
     };
-    if (
-      document.readyState === 'interactive' ||
-      document.readyState === 'complete'
-    ) {
+    if (doc.readyState === 'interactive' || doc.readyState === 'complete') {
       init();
     } else {
       handlers.push(
-        on('DOMContentLoaded', () => {
-          wrappedEmit({
-            type: EventType.DomContentLoaded,
-            data: {},
-          });
-          if (recordAfter === 'DOMContentLoaded') init();
-        }),
+        on(
+          'DOMContentLoaded',
+          () => {
+            wrappedEmit({
+              type: EventType.DomContentLoaded,
+              data: {},
+            });
+            if (recordAfter === 'DOMContentLoaded') init();
+          },
+          doc,
+        ),
       );
       handlers.push(
         on(
