@@ -1,5 +1,5 @@
-import { EventType } from '@rrweb/types';
-import type { eventWithTime } from '@rrweb/types';
+import { EventType } from '@smartesting/rrweb-types';
+import type { eventWithTime } from '@smartesting/rrweb-types';
 
 const now = Date.now();
 const events: eventWithTime[] = [
