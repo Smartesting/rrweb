@@ -18,15 +18,15 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: yarn install
       - run: yarn build:all
-      - run: (cd packages/rrweb-snapshot && npm publish --access public)
+      - run: (cd packages/rrweb-snapshot && npm run prepublish && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.SMARTESTING_NPM_TOKEN}}
-      - run: (cd packages/types && npm publish --access public)
+      - run: (cd packages/types && npm run prepublish && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.SMARTESTING_NPM_TOKEN}}
-      - run: (cd packages/rrdom && npm publish --access public)
+      - run: (cd packages/rrdom && npm run prepublish && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.SMARTESTING_NPM_TOKEN}}
-      - run: (cd packages/rrweb && npm publish --access public)
+      - run: (cd packages/rrweb && npm run prepublish && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.SMARTESTING_NPM_TOKEN}}
