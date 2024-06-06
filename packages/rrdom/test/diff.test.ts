@@ -1,15 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-import * as path from "path";
-import * as puppeteer from "puppeteer";
+import * as path from 'path';
+import * as puppeteer from 'puppeteer';
 import {
   createMirror,
   Mirror as NodeMirror,
   NodeType as RRNodeType,
   serializedNodeWithId,
-} from "@smartesting/rrweb-snapshot";
-import type { IRRElement, IRRNode } from "../src";
+} from '@smartesting/rrweb-snapshot';
+import type { IRRElement, IRRNode } from '../src';
 import {
   buildFromDom,
   getDefaultSN,
@@ -17,23 +17,23 @@ import {
   printRRDom,
   RRDocument,
   RRMediaElement,
-} from "../src";
+} from '../src';
 import {
   createOrGetNode,
   diff,
   nodeMatching,
   ReplayerHandler,
   sameNodeType,
-} from "../src/diff";
-import { Replayer } from "@smartesting/rrweb";
+} from '../src/diff';
+import { Replayer } from '@smartesting/rrweb';
 import type {
   canvasMutationData,
   eventWithTime,
   styleDeclarationData,
   styleSheetRuleData,
-} from "@rrweb/types";
-import { EventType, IncrementalSource } from "@smartesting/rrweb-types";
-import { compileTSCode } from "./utils";
+} from '@rrweb/types';
+import { EventType, IncrementalSource } from '@smartesting/rrweb-types';
+import { compileTSCode } from './utils';
 
 const elementSn = {
   type: RRNodeType.Element,
@@ -1707,19 +1707,22 @@ describe('diff algorithm for rrdom', () => {
 
   describe('apply virtual style rules to node', () => {
     beforeEach(() => {
-      const dummyReplayer = new Replayer([{
-        type: EventType.DomContentLoaded,
-        timestamp: 0,
-        data: null
-      },{
-        type: EventType.Meta,
-        data: {
-          href: '',
-          width: 1920,
-          height: 1080,
+      const dummyReplayer = new Replayer([
+        {
+          type: EventType.DomContentLoaded,
+          timestamp: 0,
+          data: null,
         },
-        timestamp: 0,
-      }]);
+        {
+          type: EventType.Meta,
+          data: {
+            href: '',
+            width: 1920,
+            height: 1080,
+          },
+          timestamp: 0,
+        },
+      ]);
       replayer.applyStyleSheetMutation = (
         data: styleDeclarationData | styleSheetRuleData,
         styleSheet: CSSStyleSheet,
