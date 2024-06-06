@@ -7,14 +7,15 @@ import type {
   IWindow,
   listenerHandler,
   textMutation,
+  throttleOptions,
 } from '@smartesting/rrweb-types';
 import type { IMirror, Mirror } from '@smartesting/rrweb-snapshot';
 import {
-  isShadowRoot,
-  IGNORED_NODE,
   classMatchesRegex,
+  IGNORED_NODE,
+  isShadowRoot,
 } from '@smartesting/rrweb-snapshot';
-import type { RRNode, RRIFrameElement } from '@smartesting/rrdom';
+import type { RRIFrameElement, RRNode } from '@smartesting/rrdom';
 
 export function on(
   type: string,

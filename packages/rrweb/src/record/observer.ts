@@ -89,7 +89,7 @@ export function initMutationObserver(
   options: MutationBufferParam,
   rootEl: Node,
 ): MutationObserver | undefined {
-  const win = getWindow(options.doc);
+  const win: IWindow | null = getWindow(options.doc);
   if (!win) return undefined;
   const mutationBuffer = new MutationBuffer();
   mutationBuffers.push(mutationBuffer);
@@ -105,10 +105,10 @@ export function initMutationObserver(
      * Then they can do this to store the native MutationObserver:
      * window.__rrMutationObserver = MutationObserver
      */
-    (win as WindowWithStoredMutationObserver).__rrMutationObserver;
-  const angularZoneSymbol = (win as WindowWithAngularZone)?.Zone?.__symbol__?.(
-    'MutationObserver',
-  );
+    // @ts-ignore
+    win.__rrMutationObserver;
+  // @ts-ignore
+  const angularZoneSymbol = win?.Zone?.__symbol__?.('MutationObserver');
   if (
     angularZoneSymbol &&
     (win as unknown as Record<string, typeof MutationObserver>)[

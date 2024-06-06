@@ -27,6 +27,7 @@ import {
   eventWithoutTime,
   eventWithTime,
   IncrementalSource,
+  type IWindow,
   listenerHandler,
   mutationCallbackParam,
   scrollCallback,
@@ -63,7 +64,7 @@ try {
 }
 
 const mirror = createMirror();
-const globalWindow = window;
+const globalWindow: IWindow = window;
 
 function record<T = eventWithTime>(
   options: recordOptions<T> = {},

@@ -8,7 +8,7 @@ import {
   serializedNodeWithId,
   createMirror,
   Mirror as NodeMirror,
-} from 'rrweb-snapshot';
+} from '@smartesting/rrweb-snapshot';
 import {
   buildFromDom,
   getDefaultSN,
@@ -25,14 +25,14 @@ import {
   sameNodeType,
 } from '../src/diff';
 import type { IRRElement, IRRNode } from '../src/document';
-import { Replayer } from 'rrweb';
+import { Replayer } from '@smartesting/rrweb';
 import type {
   eventWithTime,
   canvasMutationData,
   styleDeclarationData,
   styleSheetRuleData,
 } from '@rrweb/types';
-import { EventType, IncrementalSource } from '@rrweb/types';
+import { EventType, IncrementalSource } from '@smartesting/rrweb-types';
 import { compileTSCode } from './utils';
 
 const elementSn = {
