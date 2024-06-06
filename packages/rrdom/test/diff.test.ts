@@ -1,39 +1,39 @@
 /**
  * @jest-environment jsdom
  */
-import * as path from 'path';
-import * as puppeteer from 'puppeteer';
+import * as path from "path";
+import * as puppeteer from "puppeteer";
 import {
-  NodeType as RRNodeType,
-  serializedNodeWithId,
   createMirror,
   Mirror as NodeMirror,
-} from '@smartesting/rrweb-snapshot';
+  NodeType as RRNodeType,
+  serializedNodeWithId,
+} from "@smartesting/rrweb-snapshot";
+import type { IRRElement, IRRNode } from "../src";
 import {
   buildFromDom,
   getDefaultSN,
   Mirror as RRNodeMirror,
+  printRRDom,
   RRDocument,
   RRMediaElement,
-  printRRDom,
-} from '../src';
+} from "../src";
 import {
   createOrGetNode,
   diff,
-  ReplayerHandler,
   nodeMatching,
+  ReplayerHandler,
   sameNodeType,
-} from '../src/diff';
-import type { IRRElement, IRRNode } from '../src/document';
-import { Replayer } from '@smartesting/rrweb';
+} from "../src/diff";
+import { Replayer } from "@smartesting/rrweb";
 import type {
-  eventWithTime,
   canvasMutationData,
+  eventWithTime,
   styleDeclarationData,
   styleSheetRuleData,
-} from '@rrweb/types';
-import { EventType, IncrementalSource } from '@smartesting/rrweb-types';
-import { compileTSCode } from './utils';
+} from "@rrweb/types";
+import { EventType, IncrementalSource } from "@smartesting/rrweb-types";
+import { compileTSCode } from "./utils";
 
 const elementSn = {
   type: RRNodeType.Element,
@@ -1221,7 +1221,7 @@ describe('diff algorithm for rrdom', () => {
       document.write('<html><iframe></iframe></html>');
 
       const iframe = document.querySelector('iframe')!;
-      // Remove everthing from the iframe but the root html element
+      // Remove everything from the iframe but the root html element
       // `buildNodeWithSn` injects docType elements to trigger compatMode in iframes
       iframe.contentDocument!.write(
         '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "">',
@@ -1707,20 +1707,19 @@ describe('diff algorithm for rrdom', () => {
 
   describe('apply virtual style rules to node', () => {
     beforeEach(() => {
-      const dummyReplayer = new Replayer([
-        {
-          type: EventType.DomContentLoaded,
-          timestamp: 0,
+      const dummyReplayer = new Replayer([{
+        type: EventType.DomContentLoaded,
+        timestamp: 0,
+        data: null
+      },{
+        type: EventType.Meta,
+        data: {
+          href: '',
+          width: 1920,
+          height: 1080,
         },
-        {
-          type: EventType.Meta,
-          data: {
-            with: 1920,
-            height: 1080,
-          },
-          timestamp: 0,
-        },
-      ] as unknown as eventWithTime[]);
+        timestamp: 0,
+      }]);
       replayer.applyStyleSheetMutation = (
         data: styleDeclarationData | styleSheetRuleData,
         styleSheet: CSSStyleSheet,
