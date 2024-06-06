@@ -25,7 +25,6 @@ const baseConfigs = [
   {
     input: './src/index.ts',
     name: 'smartesting_rrdom',
-    path: 'smartesting_rrdom',
   },
 ];
 
@@ -40,7 +39,7 @@ for (let config of baseConfigs) {
       output: [
         {
           format: 'esm',
-          file: 'smartesting-rrdom',
+          file: 'es/rrdom.js',
         },
       ],
     },
@@ -52,7 +51,7 @@ for (let config of baseConfigs) {
       plugins: basePlugins,
       output: [
         {
-          name: config.name,
+          name: 'rrdom',
           format: 'iife',
           file: pkg.unpkg.replace(pkg.name, config.path),
         },
@@ -63,7 +62,7 @@ for (let config of baseConfigs) {
       plugins: basePlugins.concat(terser()),
       output: [
         {
-          name: config.name,
+          name: 'rrdom',
           format: 'iife',
           file: toMinPath(pkg.unpkg).replace(pkg.name, config.path),
           sourcemap: true,
@@ -77,7 +76,7 @@ for (let config of baseConfigs) {
       output: [
         {
           format: 'cjs',
-          file: 'smartesting-rrdom',
+          file: 'lib/rrdom.cjs',
         },
       ],
     },
