@@ -1711,14 +1711,14 @@ describe('diff algorithm for rrdom', () => {
         {
           type: EventType.DomContentLoaded,
           timestamp: 0,
-          data:null
+          data: null,
         },
         {
           type: EventType.Meta,
           data: {
             width: 1920,
             height: 1080,
-            href:''
+            href: '',
           },
           timestamp: 0,
         },
