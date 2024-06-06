@@ -829,11 +829,11 @@ function serializeElementNode(
   // block element
   if (needBlock) {
     const { width, height } = n.getBoundingClientRect();
+    const styles = [attributes.style, blockExtraStyle]
+      .filter((e) => typeof e === 'string')
     attributes = {
       class: attributes.class,
-      style: [attributes.style, blockExtraStyle]
-        .filter((e) => typeof e === 'string')
-        .join(' '),
+      style: styles.length > 0 ? styles.join(' ') : null,
       rr_width: `${width}px`,
       rr_height: `${height}px`,
     };
