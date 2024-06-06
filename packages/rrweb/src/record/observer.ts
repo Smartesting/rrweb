@@ -4,8 +4,8 @@ import {
   maskInputValue,
   Mirror,
   toLowerCase,
-} from '@smartesting/rrweb-snapshot';
-import type { FontFaceSet } from 'css-font-loading-module';
+} from "@smartesting/rrweb-snapshot";
+import type { FontFaceSet } from "css-font-loading-module";
 import {
   getWindow,
   getWindowHeight,
@@ -19,8 +19,8 @@ import {
   patch,
   StyleSheetMirror,
   throttle,
-} from '../utils';
-import type { MutationBufferParam, observerParam } from '../types';
+} from "../utils";
+import type { MutationBufferParam, observerParam } from "../types";
 import {
   Arguments,
   canvasMutationCallback,
@@ -48,9 +48,9 @@ import {
   styleDeclarationCallback,
   styleSheetRuleCallback,
   viewportResizeCallback,
-} from '@smartesting/rrweb-types';
-import MutationBuffer from './mutation';
-import { callbackWrapper } from './error-handler';
+} from "@smartesting/rrweb-types";
+import MutationBuffer from "./mutation";
+import { callbackWrapper } from "./error-handler";
 
 type WindowWithStoredMutationObserver = IWindow & {
   __rrMutationObserver?: MutationObserver;
@@ -89,7 +89,7 @@ export function initMutationObserver(
   options: MutationBufferParam,
   rootEl: Node,
 ): MutationObserver | undefined {
-  const win: IWindow | null = getWindow(options.doc);
+  const win = getWindow(options.doc);
   if (!win) return undefined;
   const mutationBuffer = new MutationBuffer();
   mutationBuffers.push(mutationBuffer);
@@ -105,10 +105,10 @@ export function initMutationObserver(
      * Then they can do this to store the native MutationObserver:
      * window.__rrMutationObserver = MutationObserver
      */
-    // @ts-ignore
-    win.__rrMutationObserver;
-  // @ts-ignore
-  const angularZoneSymbol = win?.Zone?.__symbol__?.('MutationObserver');
+    (win as WindowWithStoredMutationObserver).__rrMutationObserver;
+  const angularZoneSymbol = (
+    win as WindowWithAngularZone
+  )?.Zone?.__symbol__?.('MutationObserver');
   if (
     angularZoneSymbol &&
     (win as unknown as Record<string, typeof MutationObserver>)[
