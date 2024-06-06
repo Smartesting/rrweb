@@ -835,7 +835,7 @@ function serializeElementNode(
       rr_height: `${height}px`,
     };
     if (blockExtraStyle) {
-      attributes.style = blockExtraStyle
+      attributes.style = blockExtraStyle;
     }
   }
   // iframe
