@@ -21,7 +21,7 @@ jobs:
       - run: (cd packages/rrweb-snapshot && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.SMARTESTING_NPM_TOKEN}}
-      - run: (cd packages/rrweb-snapshot && npm publish --access public)
+      - run: (cd packages/types && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.SMARTESTING_NPM_TOKEN}}
       - run: (cd packages/rrdom && npm publish --access public)
