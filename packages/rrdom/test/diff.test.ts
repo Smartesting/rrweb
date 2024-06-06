@@ -1711,16 +1711,18 @@ describe('diff algorithm for rrdom', () => {
         {
           type: EventType.DomContentLoaded,
           timestamp: 0,
+          data:null
         },
         {
           type: EventType.Meta,
           data: {
-            with: 1920,
+            width: 1920,
             height: 1080,
+            href:''
           },
           timestamp: 0,
         },
-      ] as unknown as eventWithTime[]);
+      ]);
       replayer.applyStyleSheetMutation = (
         data: styleDeclarationData | styleSheetRuleData,
         styleSheet: CSSStyleSheet,
