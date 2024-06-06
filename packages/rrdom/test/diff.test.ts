@@ -4,31 +4,31 @@
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import {
-  NodeType as RRNodeType,
-  serializedNodeWithId,
   createMirror,
   Mirror as NodeMirror,
+  NodeType as RRNodeType,
+  serializedNodeWithId,
 } from '@smartesting/rrweb-snapshot';
+import type { IRRElement, IRRNode } from '../src';
 import {
   buildFromDom,
   getDefaultSN,
   Mirror as RRNodeMirror,
+  printRRDom,
   RRDocument,
   RRMediaElement,
-  printRRDom,
 } from '../src';
 import {
   createOrGetNode,
   diff,
-  ReplayerHandler,
   nodeMatching,
+  ReplayerHandler,
   sameNodeType,
 } from '../src/diff';
-import type { IRRElement, IRRNode } from '../src/document';
 import { Replayer } from '@smartesting/rrweb';
 import type {
-  eventWithTime,
   canvasMutationData,
+  eventWithTime,
   styleDeclarationData,
   styleSheetRuleData,
 } from '@rrweb/types';
@@ -1221,7 +1221,7 @@ describe('diff algorithm for rrdom', () => {
       document.write('<html><iframe></iframe></html>');
 
       const iframe = document.querySelector('iframe')!;
-      // Remove everthing from the iframe but the root html element
+      // Remove everything from the iframe but the root html element
       // `buildNodeWithSn` injects docType elements to trigger compatMode in iframes
       iframe.contentDocument!.write(
         '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "">',
@@ -1716,9 +1716,9 @@ describe('diff algorithm for rrdom', () => {
         {
           type: EventType.Meta,
           data: {
+            href: '',
             width: 1920,
             height: 1080,
-            href: '',
           },
           timestamp: 0,
         },

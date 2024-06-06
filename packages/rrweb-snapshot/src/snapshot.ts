@@ -831,12 +831,12 @@ function serializeElementNode(
     const { width, height } = n.getBoundingClientRect();
     attributes = {
       class: attributes.class,
-      style: [attributes.style, blockExtraStyle]
-        .filter((e) => typeof e === 'string')
-        .join(' '),
       rr_width: `${width}px`,
       rr_height: `${height}px`,
     };
+    if (blockExtraStyle) {
+      attributes.style = blockExtraStyle;
+    }
   }
   // iframe
   if (tagName === 'iframe' && !keepIframeSrcFn(attributes.src as string)) {
