@@ -4,8 +4,8 @@ import {
   maskInputValue,
   Mirror,
   toLowerCase,
-} from "@smartesting/rrweb-snapshot";
-import type { FontFaceSet } from "css-font-loading-module";
+} from '@smartesting/rrweb-snapshot';
+import type { FontFaceSet } from 'css-font-loading-module';
 import {
   getWindow,
   getWindowHeight,
@@ -19,8 +19,8 @@ import {
   patch,
   StyleSheetMirror,
   throttle,
-} from "../utils";
-import type { MutationBufferParam, observerParam } from "../types";
+} from '../utils';
+import type { MutationBufferParam, observerParam } from '../types';
 import {
   Arguments,
   canvasMutationCallback,
@@ -48,9 +48,9 @@ import {
   styleDeclarationCallback,
   styleSheetRuleCallback,
   viewportResizeCallback,
-} from "@smartesting/rrweb-types";
-import MutationBuffer from "./mutation";
-import { callbackWrapper } from "./error-handler";
+} from '@smartesting/rrweb-types';
+import MutationBuffer from './mutation';
+import { callbackWrapper } from './error-handler';
 
 type WindowWithStoredMutationObserver = IWindow & {
   __rrMutationObserver?: MutationObserver;
@@ -106,9 +106,9 @@ export function initMutationObserver(
      * window.__rrMutationObserver = MutationObserver
      */
     (win as WindowWithStoredMutationObserver).__rrMutationObserver;
-  const angularZoneSymbol = (
-    win as WindowWithAngularZone
-  )?.Zone?.__symbol__?.('MutationObserver');
+  const angularZoneSymbol = (win as WindowWithAngularZone)?.Zone?.__symbol__?.(
+    'MutationObserver',
+  );
   if (
     angularZoneSymbol &&
     (win as unknown as Record<string, typeof MutationObserver>)[
