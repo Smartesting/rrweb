@@ -2,14 +2,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type * as puppeteer from 'puppeteer';
 import 'construct-style-sheets-polyfill';
-import type { recordOptions } from '../src/types';
+import type { recordOptions } from '../src';
 import {
-  listenerHandler,
-  eventWithTime,
   EventType,
+  eventWithTime,
   IncrementalSource,
-  styleSheetRuleData,
+  IWindow as RecordWindow,
+  listenerHandler,
   selectionData,
+  styleSheetRuleData,
 } from '@smartesting/rrweb-types';
 import {
   assertSnapshot,
@@ -19,6 +20,7 @@ import {
   waitForRAF,
 } from './utils';
 import type { Server } from 'http';
+import { AssertionError } from 'node:assert';
 
 interface ISuite {
   code: string;
@@ -1024,5 +1026,94 @@ describe('record iframes', function (this: ISuite) {
     expect(addRuleCount).toEqual(2);
     expect(removeRuleCount).toEqual(2);
     assertSnapshot(ctx.events);
+  });
+});
+
+describe('record specified window', function (this: ISuite) {
+  jest.setTimeout(10_000);
+
+  const ctx: ISuite = setup.call(
+    this,
+    `
+      <!DOCTYPE html>
+      <html>
+        <body>
+          <p>Lorem ipsum</p>
+          <iframe id='iframe-to-record' srcdoc="<button>Mysterious Button</button>" />
+          <input type="text" size="40" />
+        </body>
+      </html>
+    `,
+  );
+
+  it('captures iframe content only', async () => {
+    await ctx.page.evaluate(() => {
+      const iFrame = document.querySelector('iframe');
+      if (!iFrame) throw new AssertionError({ message: 'iFrame expected' });
+      const innerWindow = iFrame.contentWindow as RecordWindow;
+      const { record } = (window as unknown as IWindow).rrweb;
+      record({
+        emit: (window as unknown as IWindow).emit,
+        window: innerWindow,
+      });
+    });
+    await waitForRAF(ctx.page);
+    const fullSnapshotData = ctx.events
+      .filter((e) => e.type === EventType.FullSnapshot)
+      .map((e) => e.data);
+    expect(fullSnapshotData).toMatchInlineSnapshot(
+      `
+      Array [
+        Object {
+          "initialOffset": Object {
+            "left": 0,
+            "top": 0,
+          },
+          "node": Object {
+            "childNodes": Array [
+              Object {
+                "attributes": Object {},
+                "childNodes": Array [
+                  Object {
+                    "attributes": Object {},
+                    "childNodes": Array [],
+                    "id": 3,
+                    "tagName": "head",
+                    "type": 2,
+                  },
+                  Object {
+                    "attributes": Object {},
+                    "childNodes": Array [
+                      Object {
+                        "attributes": Object {},
+                        "childNodes": Array [
+                          Object {
+                            "id": 6,
+                            "textContent": "Mysterious Button",
+                            "type": 3,
+                          },
+                        ],
+                        "id": 5,
+                        "tagName": "button",
+                        "type": 2,
+                      },
+                    ],
+                    "id": 4,
+                    "tagName": "body",
+                    "type": 2,
+                  },
+                ],
+                "id": 2,
+                "tagName": "html",
+                "type": 2,
+              },
+            ],
+            "id": 1,
+            "type": 0,
+          },
+        },
+      ]
+    `,
+    );
   });
 });
