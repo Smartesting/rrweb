@@ -864,7 +864,7 @@ function serializeElementNode(
       rr_height: `${height}px`,
     };
     if (styleItems.length > 0) {
-      attributes.style = styleItems.join(';');
+      attributes.style = styleItems.join('; ') + ';';
     }
   }
   // iframe
