@@ -27,7 +27,6 @@ import {
   eventWithoutTime,
   eventWithTime,
   IncrementalSource,
-  type IWindow,
   listenerHandler,
   mutationCallbackParam,
   scrollCallback,
@@ -64,7 +63,6 @@ try {
 }
 
 const mirror = createMirror();
-const globalWindow: IWindow = window;
 
 function record<T = eventWithTime>(
   options: recordOptions<T> = {},
@@ -105,20 +103,18 @@ function record<T = eventWithTime>(
     errorHandler,
     allowList = null,
     blockExtraStyle = null,
-    window = globalWindow,
   } = options;
-  const doc = window.document;
+  const win = options.window ?? window;
+  const doc = win.document;
   registerErrorHandler(errorHandler);
 
-  const inEmittingFrame = recordCrossOriginIframes
-    ? window.parent === window
-    : true;
+  const inEmittingFrame = recordCrossOriginIframes ? win.parent === win : true;
 
   let passEmitsToParent = false;
   if (!inEmittingFrame) {
     try {
       // throws if parent is cross-origin
-      if (window.parent.document) {
+      if (win.parent.document) {
         passEmitsToParent = false; // if parent is same origin we collect iframe events from the parent
       }
     } catch (e) {
@@ -224,10 +220,10 @@ function record<T = eventWithTime>(
       const message: CrossOriginIframeMessageEventContent<T> = {
         type: 'rrweb',
         event: eventProcessor(e),
-        origin: window.location.origin,
+        origin: win.location.origin,
         isCheckout,
       };
-      window.parent.postMessage(message, '*');
+      win.parent.postMessage(message, '*');
     }
 
     if (e.type === EventType.FullSnapshot) {
@@ -300,7 +296,7 @@ function record<T = eventWithTime>(
     stylesheetManager: stylesheetManager,
     recordCrossOriginIframes,
     wrappedEmit,
-    win: window,
+    win,
   });
 
   /**
@@ -321,7 +317,7 @@ function record<T = eventWithTime>(
   canvasManager = new CanvasManager({
     recordCanvas,
     mutationCb: wrappedCanvasMutationEmit,
-    win: window,
+    win,
     blockClass,
     blockSelector,
     mirror,
@@ -366,9 +362,9 @@ function record<T = eventWithTime>(
       {
         type: EventType.Meta,
         data: {
-          href: window.location.href,
-          width: getWindowWidth(window),
-          height: getWindowHeight(window),
+          href: win.location.href,
+          width: getWindowWidth(win),
+          height: getWindowHeight(win),
         },
       },
       isCheckout,
@@ -425,7 +421,7 @@ function record<T = eventWithTime>(
         type: EventType.FullSnapshot,
         data: {
           node,
-          initialOffset: getWindowScroll(window),
+          initialOffset: getWindowScroll(win),
         },
       },
       isCheckout,
@@ -620,7 +616,7 @@ function record<T = eventWithTime>(
             });
             if (recordAfter === 'load') init();
           },
-          window,
+          win,
         ),
       );
     }
