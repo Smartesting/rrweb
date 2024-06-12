@@ -1,30 +1,30 @@
 import {
+  attributes,
+  DataURLOptions,
+  elementNode,
+  ICanvas,
+  KeepIframeSrcFn,
+  MaskInputFn,
+  MaskInputOptions,
+  MaskTextFn,
+  type mediaAttributes,
+  NodeType,
+  serializedElementNodeWithId,
   serializedNode,
   serializedNodeWithId,
-  NodeType,
-  attributes,
-  MaskInputOptions,
   SlimDOMOptions,
-  DataURLOptions,
-  MaskTextFn,
-  MaskInputFn,
-  KeepIframeSrcFn,
-  ICanvas,
-  elementNode,
-  serializedElementNodeWithId,
-  type mediaAttributes,
 } from './types';
 import {
-  Mirror,
+  extractFileExtension,
+  getInputType,
   is2DCanvasBlank,
   isElement,
+  isNativeShadowDom,
   isShadowRoot,
   maskInputValue,
-  isNativeShadowDom,
+  Mirror,
   stringifyStylesheet,
-  getInputType,
   toLowerCase,
-  extractFileExtension,
 } from './utils';
 
 let _id = 1;
@@ -622,6 +622,25 @@ function serializeTextNode(
   };
 }
 
+function normalizeStyles(styles: ReadonlyArray<string>): string[] {
+  const result = [];
+  for (const style of styles) {
+    result.push(
+      ...style
+        .split(';')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0),
+    );
+  }
+  return result;
+}
+
+function hasStyle(styleItems: string[], key: string) {
+  return styleItems.some((item) => {
+    return item.split(':')[0].trim() === key;
+  });
+}
+
 function serializeElementNode(
   n: HTMLElement,
   options: {
@@ -829,18 +848,24 @@ function serializeElementNode(
   // block element
   if (needBlock) {
     const { width, height } = n.getBoundingClientRect();
-    const styles = [
-      attributes.style,
-      `width: ${width}px`,
-      `height: ${height}px`,
-      blockExtraStyle,
-    ].filter((e) => typeof e === 'string');
+    const styles: ReadonlyArray<string> = [attributes.style, blockExtraStyle]
+      .filter((e) => typeof e === 'string')
+      .map(String);
+    const styleItems = normalizeStyles(styles);
+    if (!hasStyle(styleItems, 'width')) {
+      styleItems.push(`width: ${width}px`);
+    }
+    if (!hasStyle(styleItems, 'height')) {
+      styleItems.push(`height: ${height}px`);
+    }
     attributes = {
       class: attributes.class,
-      style: styles.length > 0 ? styles.join('; ') : null,
       rr_width: `${width}px`,
       rr_height: `${height}px`,
     };
+    if (styleItems.length > 0) {
+      attributes.style = styleItems.join(';');
+    }
   }
   // iframe
   if (tagName === 'iframe' && !keepIframeSrcFn(attributes.src as string)) {
