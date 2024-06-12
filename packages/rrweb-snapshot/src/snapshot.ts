@@ -622,15 +622,22 @@ function serializeTextNode(
   };
 }
 
-function normalizeStyles(styles: ReadonlyArray<string>): string[] {
-  const result = [];
+function buildStyleMap(
+  ...styles: ReadonlyArray<string | number | null | true>
+): Map<string, string> {
+  const result: Map<string, string> = new Map();
   for (const style of styles) {
-    result.push(
-      ...style
-        .split(';')
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0),
-    );
+    if (typeof style !== 'string') continue;
+    style
+      .split(';')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0)
+      .forEach((s) => {
+        const split = s.split(':');
+        if (split.length === 2) {
+          result.set(split[0].trim(), split[1].trim());
+        }
+      });
   }
   return result;
 }
@@ -848,24 +855,21 @@ function serializeElementNode(
   // block element
   if (needBlock) {
     const { width, height } = n.getBoundingClientRect();
-    const styles: ReadonlyArray<string> = [attributes.style, blockExtraStyle]
-      .filter((e) => typeof e === 'string')
-      .map(String);
-    const styleItems = normalizeStyles(styles);
-    if (!hasStyle(styleItems, 'width')) {
-      styleItems.push(`width: ${width}px`);
-    }
-    if (!hasStyle(styleItems, 'height')) {
-      styleItems.push(`height: ${height}px`);
-    }
+    const styleMap: Map<string, string> = buildStyleMap(
+      attributes.style,
+      blockExtraStyle,
+    );
+    styleMap.set('width', `${width}px`);
+    styleMap.set('height', `${height}px`);
     attributes = {
       class: attributes.class,
       rr_width: `${width}px`,
       rr_height: `${height}px`,
+      style:
+        Array.from(styleMap.entries())
+          .map(([key, value]) => `${key}: ${value}`)
+          .join('; ') + ';',
     };
-    if (styleItems.length > 0) {
-      attributes.style = styleItems.join('; ') + ';';
-    }
   }
   // iframe
   if (tagName === 'iframe' && !keepIframeSrcFn(attributes.src as string)) {

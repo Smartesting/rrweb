@@ -5392,7 +5392,8 @@ exports[`record integration tests mutations should work when blocked class is un
                         \\"attributes\\": {
                           \\"class\\": \\"rr-block\\",
                           \\"rr_width\\": \\"200px\\",
-                          \\"rr_height\\": \\"33px\\"
+                          \\"rr_height\\": \\"33px\\",
+                          \\"style\\": \\"width: 200px; height: 33px;\\"
                         },
                         \\"childNodes\\": [],
                         \\"id\\": 36
@@ -5564,7 +5565,8 @@ exports[`record integration tests mutations should work when blocked class is un
                         \\"attributes\\": {
                           \\"class\\": \\"rr-block\\",
                           \\"rr_width\\": \\"200px\\",
-                          \\"rr_height\\": \\"33px\\"
+                          \\"rr_height\\": \\"33px\\",
+                          \\"style\\": \\"width: 200px; height: 33px;\\"
                         },
                         \\"childNodes\\": [],
                         \\"id\\": 62
@@ -8907,7 +8909,8 @@ exports[`record integration tests should not record blocked elements and its chi
                     \\"attributes\\": {
                       \\"class\\": \\"rr-block\\",
                       \\"rr_width\\": \\"50px\\",
-                      \\"rr_height\\": \\"50px\\"
+                      \\"rr_height\\": \\"50px\\",
+                      \\"style\\": \\"width: 50px; height: 50px;\\"
                     },
                     \\"childNodes\\": [],
                     \\"id\\": 18
@@ -9087,7 +9090,8 @@ exports[`record integration tests should not record blocked elements dynamically
                     \\"attributes\\": {
                       \\"class\\": \\"rr-block\\",
                       \\"rr_width\\": \\"50px\\",
-                      \\"rr_height\\": \\"50px\\"
+                      \\"rr_height\\": \\"50px\\",
+                      \\"style\\": \\"width: 50px; height: 50px;\\"
                     },
                     \\"childNodes\\": [],
                     \\"id\\": 18
@@ -9147,7 +9151,8 @@ exports[`record integration tests should not record blocked elements dynamically
             \\"attributes\\": {
               \\"class\\": \\"rr-block\\",
               \\"rr_width\\": \\"100px\\",
-              \\"rr_height\\": \\"100px\\"
+              \\"rr_height\\": \\"100px\\",
+              \\"style\\": \\"width: Npx; height: Npx;\\"
             },
             \\"childNodes\\": [],
             \\"id\\": 23
